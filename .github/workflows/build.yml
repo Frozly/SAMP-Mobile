@@ -1,0 +1,33 @@
+name: Build SA-MP Mobile
+
+on:
+  push:
+    branches: [ "GTA-2.11" ]
+  workflow_dispatch: # هذا السطر مهم جداً لأنه يسمح لك بتشغيل البناء يدوياً بضغطة زر
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout source code
+        uses: actions/checkout@v4
+
+      - name: Set up Java JDK
+        uses: actions/setup-java@v3
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+
+      - name: Make gradlew executable
+        run: chmod +x gradlew
+
+      - name: Build APK with Gradle
+        run: ./gradlew assembleDebug
+
+      - name: Upload APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: SA-MP-APK
+          path: app/build/outputs/apk/debug/*.apk
+
